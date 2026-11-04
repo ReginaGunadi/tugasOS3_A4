@@ -5,6 +5,7 @@
 #include <sys/mman.h> // NOTE: ini kalo merah, berarti karena lagi di OS Windows
                     // nanti kalo di-run di terminal Linux, akan aman. (Wait lagi ngecek)
 #include "banner.h" // Panggil modul banner
+#include "logger.h"
 
 // Fungsi pembaca metrik VmSize & VmRSS dari /proc/self/status
 long get_vmsize_kb() {
@@ -88,6 +89,11 @@ void alokasi_malloc() {
     long vmrss_after = get_vmrss_kb();
     printf("VmSize After: %ld KB | VmRSS After: %ld KB\n\n", vmsize_after, vmrss_after);
 
+    if (log_allocation("malloc", (size_t)n, arr, arr,
+                       vmsize_before, vmrss_before, vmsize_after, vmrss_after) != 0) {
+        fprintf(stderr, "Peringatan: pencatatan log malloc tidak lengkap.\n");
+    }
+
     // jangan lupa dibebasin pake free biar gak memory leak
     free(arr);
 }
@@ -136,6 +142,11 @@ void alokasi_mmap() {
     long vmsize_after = get_vmsize_kb();
     long vmrss_after = get_vmrss_kb();
     printf("VmSize After: %ld KB | VmRSS After: %ld KB\n\n", vmsize_after, vmrss_after);
+
+    if (log_allocation("mmap", (size_t)n, arr, arr,
+                       vmsize_before, vmrss_before, vmsize_after, vmrss_after) != 0) {
+        fprintf(stderr, "Peringatan: pencatatan log mmap tidak lengkap.\n");
+    }
 
     // lepas pemetaan memorinya pake munmap
     munmap(arr, bytes);
