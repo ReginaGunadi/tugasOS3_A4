@@ -198,7 +198,7 @@ void fitur_variasi() {
         long long vmrss_now = get_vmrss_kb();
         
         // Penghitungan delta RSS
-        // Rumus: Delta_rss = VmRSS_now - VmRSS_prev
+        // Rumus: Delta_rss = vmrss_now - vmrss_prev
         long long delta_rss;
 
         if (i == 0){
