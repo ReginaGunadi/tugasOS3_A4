@@ -153,7 +153,68 @@ void alokasi_mmap() {
 }
 
 void fitur_variasi() {
-    // TODO: paging & lazy allocation
+    printf("\n--- Varian 4: Demand Paging ---\n");
+
+    long long total_mb_can_use = 1000;
+    long long total_bytes_can_use = total_mb_can_use * 1024 * 1024;
+
+    printf("Alokasi virtual: %lld MB\n\n", total_mb_can_use);
+
+    // Coba buat dulu alokasi memorinya pakai mmap
+    int *arr_variation = (int *)mmap(NULL, total_bytes_can_use, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
+    if (arr_variation == MAP_FAILED) {
+        perror("Waduh, mmap-nya gagal total!");
+        return;
+    }
+
+    // Berapa kali kondisi memori ditampilkan (sesuai contoh output di soal)
+    int checkpoints[] = {0, 5, 10, 25, 50, 75, 100}; 
+    int checkpoints_size = sizeof(checkpoints) / sizeof(checkpoints[0]);
+
+    printf("%-10s %-10s %-15s %-15s %-15s\n", "Disentuh", "Halaman", "VmSize (KB)", "VmRSS (KB)", "delta RSS (KB)");
+
+    // Penghitungan nilai dari halaman, VMSize, VmRSS, dan delta RSS per checkpoint
+    long long vmrss_prev = -1;
+    long long bytes_touched_prev = 0;
+
+    for (int i = 0; i < checkpoints_size; i++) {
+        int touch_mega_bytes = checkpoints[i];
+        long long touch_bytes = touch_mega_bytes * 1024 * 1024;
+
+        // Halaman = bytes / 4 KB --> 4 KB = 4096 bytes  
+        long long page_num = touch_bytes / 4096;
+        
+        // Urus memori per halaman (4 KB / 4096 bytes) dari batas disentuh sebelumnya sampai ke checkpoint
+        // Kalau ada butuh akses/nyentuh memori --> lakukan page fault agar OS mengalokasikan memori (demand paging)
+        if (touch_mega_bytes > 0){
+            for (long long b = bytes_touched_prev / sizeof(int); b < touch_bytes / sizeof(int); b += 4096 / sizeof(int)) {
+                arr_variation[b] = 1; // Nulis ke memori ngebuat page fault
+            }
+            bytes_touched_prev = touch_bytes;
+        }
+
+        // Ambil nilai VMSize dan VMRSS
+        long long vmsize_now = get_vmsize_kb();
+        long long vmrss_now = get_vmrss_kb();
+        
+        // Penghitungan delta RSS
+        // Rumus: Delta_rss = VmRSS_now - VmRSS_prev
+        long long delta_rss;
+
+        if (i == 0){
+            delta_rss = 0;
+            vmrss_prev = vmrss_now;
+        } 
+        else{
+            delta_rss = vmrss_now - vmrss_prev;
+            vmrss_prev = vmrss_now;
+        }
+
+        printf("%-10d MB %-10lld %-15lld %-15lld %+lld\n", touch_mega_bytes, page_num, vmsize_now, vmrss_now, delta_rss);
+    }
+
+    munmap(arr_variation, total_bytes_can_use);
+    printf("\n");
 }
 
 // Loop Menu Utama Program
