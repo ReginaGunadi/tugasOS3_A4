@@ -187,7 +187,8 @@ void fitur_variasi() {
         // Urus memori per halaman (4 KB / 4096 bytes) dari batas disentuh sebelumnya sampai ke checkpoint
         // Kalau ada butuh akses/nyentuh memori --> lakukan page fault agar OS mengalokasikan memori (demand paging)
         if (touch_mega_bytes > 0){
-            for (long long b = bytes_touched_prev / sizeof(int); b < touch_bytes / sizeof(int); b += 4096 / sizeof(int)) {
+            long long int_size = (long long)sizeof(int);
+            for (long long b = bytes_touched_prev / int_size; b < touch_bytes / int_size; b += 4096 / int_size) {
                 arr_variation[b] = 1; // Nulis ke memori ngebuat page fault
             }
             bytes_touched_prev = touch_bytes;
