@@ -1,15 +1,16 @@
 CC    = gcc
-SRCS  = main.c banner.h banner.c logger.h logger.c
+SRCS  = main.c banner.c
+HDRS  = banner.h
 FLAGS = -Wall -Wextra -Werror
 
 .PHONY: all dynamic static run clean
 
 all: static dynamic
 
-dynamic: $(SRCS)
+dynamic: $(SRCS) $(HDRS)
 	$(CC) $(FLAGS) -o main_dyn $(SRCS)
 
-static: $(SRCS)
+static: $(SRCS) $(HDRS)
 	$(CC) $(FLAGS) -static -o main_static $(SRCS)
 
 run: dynamic
