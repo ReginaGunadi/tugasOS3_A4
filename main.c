@@ -57,7 +57,7 @@ void alokasi_malloc() {
     long long n;
     printf("How many integers to allocate: ");
     if (scanf("%lld", &n) != 1 || n <= 0) {
-        printf("Input jumlahnya ngaco bro!\n\n");
+        printf("Input tidak valid!\n\n");
         while (getchar() != '\n');
         return;
     }
@@ -65,7 +65,7 @@ void alokasi_malloc() {
     // minta memori ke heap pake malloc
     int *arr = (int *)malloc(n * sizeof(int));
     if (arr == NULL) {
-        perror("Waduh, malloc-nya ambruk (gagal)!");
+        perror("Proses malloc gagal!");
         return;
     }
 
@@ -109,7 +109,7 @@ void alokasi_mmap() {
     long long n;
     printf("How many integers to allocate: ");
     if (scanf("%lld", &n) != 1 || n <= 0) {
-        printf("Input jumlahnya ngaco bro!\n\n");
+        printf("Input tidak valid!\n\n");
         while (getchar() != '\n');
         return;
     }
@@ -119,7 +119,7 @@ void alokasi_mmap() {
     // minta memori langsung ke kernel pake mmap anonymous
     int *arr = (int *)mmap(NULL, bytes, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
     if (arr == MAP_FAILED) {
-        perror("Waduh, mmap-nya gagal total!");
+        perror("Proses mmap gagal!");
         return;
     }
 
