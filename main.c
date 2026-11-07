@@ -163,7 +163,7 @@ void fitur_variasi() {
     // Coba buat dulu alokasi memorinya pakai mmap
     int *arr_variation = (int *)mmap(NULL, total_bytes_can_use, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
     if (arr_variation == MAP_FAILED) {
-        perror("Waduh, mmap-nya gagal total!");
+        perror("Proses mmap gagal!");
         return;
     }
 
