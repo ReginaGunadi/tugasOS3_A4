@@ -1,0 +1,16 @@
+You picked malloc/free.
+VmSize Before: 2772 KB | VmRSS Before: 1892 KB
+Starting memory address: 0x7060d26ec010
+Integers allocated: 12341234
+Printing first 10 values in reverse order:
+12341234
+12341233
+12341232
+12341231
+12341230
+12341229
+12341228
+12341227
+12341226
+12341225
+VmSize After: 50980 KB | VmRSS After: 50164 KB
