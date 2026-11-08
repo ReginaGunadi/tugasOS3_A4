@@ -1,5 +1,5 @@
 CC    = gcc
-SRCS  = main.c banner.h banner.c logger.h logger.c
+SRCS  = main.c banner.h banner.c
 FLAGS = -Wall -Wextra -Werror
 
 .PHONY: all dynamic static run clean
